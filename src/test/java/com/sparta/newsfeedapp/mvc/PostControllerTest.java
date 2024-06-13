@@ -26,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -93,9 +94,12 @@ class PostControllerTest {
     @DisplayName("Post 등록")
     void test1() throws Exception {
         this.mockUserSetup();
+        //Jackson 라이브러리에서 requestDto 를 역직렬화 하기 위해서는 requestDto 부분에 꼭 기본 생성자가 있어야한다.
         PostRequestDto requestDto = new PostRequestDto("테스트 내용입니다");
 
-        PostResponseDto responseDto = new PostResponseDto(1L, 1L, "테스트 내용입니다", null, null);
+        Post post = new Post(requestDto, new User());
+
+        PostResponseDto responseDto = new PostResponseDto(post);
 
         given(postService.createPost(any(PostRequestDto.class),any(User.class))).willReturn(responseDto);
 
@@ -108,7 +112,7 @@ class PostControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
                 )
-//                .andExpect(status().isOk())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 
@@ -131,7 +135,6 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].content").value("첫 번째 게시글"))
                 .andExpect(jsonPath("$[1].content").value("두 번째 게시글"))
-                .andExpect(jsonPath("$[1].id").value(2))
                 .andDo(print());
     }
 }

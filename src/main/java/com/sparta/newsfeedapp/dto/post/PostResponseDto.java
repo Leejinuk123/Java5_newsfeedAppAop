@@ -4,12 +4,13 @@ import com.sparta.newsfeedapp.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class PostResponseDto {
     private Long id;
     private Long userId;
@@ -17,7 +18,7 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime ModifiedAt;
 
-    public PostResponseDto(Post post) {
+    public PostResponseDto(Post post){
         this.id = post.getId();
         this.userId = post.getUser().getId();
         this.content = post.getContent();
