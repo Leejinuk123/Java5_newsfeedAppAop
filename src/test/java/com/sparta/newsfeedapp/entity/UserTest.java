@@ -4,6 +4,8 @@ import com.sparta.newsfeedapp.dto.user.UpdateRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserTest {
@@ -65,11 +67,37 @@ class UserTest {
     @Test
     @DisplayName("유저 이메일 인증 완료 상태로 만들기 테스트")
     public void test4(){
-        User unCheckedUser = new User("2", "password", "test@email.com", "tester", "tester's bio", UserStatusEnum.UNCHECKED);
         //given
+        User unCheckedUser = new User("2", "password", "test@email.com", "tester", "tester's bio", UserStatusEnum.UNCHECKED);
         //when
         unCheckedUser.setStatusToChecked();
         //then
         assertEquals(UserStatusEnum.ACTIVE, unCheckedUser.getUserStatus());
+    }
+
+    @Test
+    @DisplayName("User 에 Refresh-Token 주입하기")
+    void setRefreshToken() {
+        //given
+        String refreshToken = "Bearer ldksaji328d81hha9shch";
+        //when
+        testUser.setRefreshToken(refreshToken);
+        //then
+        assertEquals(refreshToken, testUser.getRefreshToken());
+    }
+
+    @Test
+    @DisplayName("User 에 Random AuthNumber 주입하기")
+    void setAuthNumber() {
+        //given
+        Random r = new Random();
+        String randomNumber = "";
+        for(int i = 0; i < 6; i++) {
+            randomNumber += Integer.toString(r.nextInt(10));
+        }
+        //when
+        testUser.setAuthNumber(randomNumber);
+        //then
+        assertEquals(randomNumber, testUser.getAuthNumber());
     }
 }
