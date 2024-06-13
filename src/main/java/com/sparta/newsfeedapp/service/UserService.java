@@ -2,8 +2,8 @@ package com.sparta.newsfeedapp.service;
 
 import com.sparta.newsfeedapp.dto.user.ProfileResponseDto;
 import com.sparta.newsfeedapp.dto.user.SignupRequestDto;
-import com.sparta.newsfeedapp.dto.user.deleteRequestDto;
-import com.sparta.newsfeedapp.dto.user.updateRequestDto;
+import com.sparta.newsfeedapp.dto.user.DeleteRequestDto;
+import com.sparta.newsfeedapp.dto.user.UpdateRequestDto;
 import com.sparta.newsfeedapp.entity.User;
 import com.sparta.newsfeedapp.entity.UserStatusEnum;
 import com.sparta.newsfeedapp.exception.DeletedUserException;
@@ -34,7 +34,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final JwtBlacklistService jwtBlacklistService;
+    private final com.sparta.newsfeedapp.service.JwtBlacklistService jwtBlacklistService;
 
     public void signup(SignupRequestDto requestDto) {
         String userId = requestDto.getUserId();
@@ -50,7 +50,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(deleteRequestDto requestDto, User user) {
+    public void deleteUser(DeleteRequestDto requestDto, User user) {
         String userPassword = requestDto.getPassword();
         if (!passwordEncoder.matches(userPassword, user.getPassword())){
             throw new PasswordMistmatchException();
@@ -71,7 +71,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateProfile(updateRequestDto requestDto, User user) {
+    public void updateProfile(UpdateRequestDto requestDto, User user) {
         if(user.getUserStatus() == DELETED){
             log.info("삭제된 사용자입니다");
             throw new DeletedUserException();

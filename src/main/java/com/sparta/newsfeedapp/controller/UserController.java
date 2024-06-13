@@ -1,8 +1,8 @@
 package com.sparta.newsfeedapp.controller;
 
 import com.sparta.newsfeedapp.dto.user.SignupRequestDto;
-import com.sparta.newsfeedapp.dto.user.deleteRequestDto;
-import com.sparta.newsfeedapp.dto.user.updateRequestDto;
+import com.sparta.newsfeedapp.dto.user.DeleteRequestDto;
+import com.sparta.newsfeedapp.dto.user.UpdateRequestDto;
 import com.sparta.newsfeedapp.dto.user.ProfileResponseDto;
 import com.sparta.newsfeedapp.security.UserDetailsImpl;
 import com.sparta.newsfeedapp.service.UserService;
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users")
-    public ResponseEntity<String> deleteUser(@Valid @RequestBody deleteRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<String> deleteUser(@Valid @RequestBody DeleteRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         userService.deleteUser(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body("삭제가 완료되었습니다.");
     }
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping("/users/profile")
-    public ResponseEntity<String> updateProfile(@Valid @RequestBody updateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<String> updateProfile(@Valid @RequestBody UpdateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         userService.updateProfile(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body("수정이 완료되었습니다.");
     }
