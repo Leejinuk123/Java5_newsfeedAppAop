@@ -17,9 +17,6 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String content;
 
-//    @OneToMany(mappedBy = "post")
-//    private List<Comment> comment;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
