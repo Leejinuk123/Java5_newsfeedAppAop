@@ -1,10 +1,15 @@
 package com.sparta.newsfeedapp.dto.post;
 
 import com.sparta.newsfeedapp.entity.Post;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostResponseDto {
     private Long id;
     private Long userId;
