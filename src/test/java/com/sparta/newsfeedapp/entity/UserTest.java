@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserTest {
+
+    private final User testUser = new User("1", "password", "test@email.com", "tester", "tester's bio", UserStatusEnum.ACTIVE);
+
     @Test
     @DisplayName("유저 프로필 수정(update) 기능 정상 성공 테스트(모든 값이 들어있을 때)")
     public void test1(){
         //given
         UpdateRequestDto requestDto = new UpdateRequestDto("newTester", "newTest@email.com", "tester's new bio", "password", "newPassword");
-        User testUser = new User("1", "password", "test@email.com", "tester", "tester's bio", UserStatusEnum.ACTIVE);
 
         String newPassword = requestDto.getNewPassword();
         String newName = requestDto.getName();
@@ -34,7 +36,6 @@ class UserTest {
     public void test2(){
         //given
         UpdateRequestDto requestDto = new UpdateRequestDto("newTester", null, "tester's new bio", "password", null);
-        User testUser = new User("1", "password", "test@email.com", "tester", "tester's bio", UserStatusEnum.ACTIVE);
 
         String newPassword = requestDto.getNewPassword();
         String newName = requestDto.getName();
@@ -51,26 +52,24 @@ class UserTest {
         assertEquals("password", testUser.getPassword());
     }
 
-//    @Test
-//    @DisplayName("유저 프로필 수정(update) 기능 삭제된 사용자 예외처리 테스트")
-//    public void test(){
-//        //given
-//        UpdateRequestDto requestDto = new UpdateRequestDto("newTester", "newTest@email.com", "tester's new bio", "password", "newPassword");
-//        User testUser = new User("1", "password", "test@email.com", "tester", "tester's bio", UserStatusEnum.DELETED);
-//
-//        String newPassword = requestDto.getNewPassword();
-//        String newName = requestDto.getName();
-//        String newEmail = requestDto.getEmail();
-//        String newBio = requestDto.getBio();
-//        //when
-//        Exception exception = assertThrows(DeletedUserException.class, () -> {
-//                    testUser.update(newName, newEmail, newPassword, newBio);
-//                });
-//        //then
-//        assertEquals(
-//                "삭제된 유저입니다.",
-//                exception.getMessage()
-//        );
-//    }
+    @Test
+    @DisplayName("유저 삭제하기 테스트")
+    public void test3(){
+        //given
+        //when
+        testUser.setStatusToDeleted();
+        //then
+        assertEquals(UserStatusEnum.DELETED, testUser.getUserStatus());
+    }
 
+    @Test
+    @DisplayName("유저 이메일 인증 완료 상태로 만들기 테스트")
+    public void test4(){
+        User unCheckedUser = new User("2", "password", "test@email.com", "tester", "tester's bio", UserStatusEnum.UNCHECKED);
+        //given
+        //when
+        unCheckedUser.setStatusToChecked();
+        //then
+        assertEquals(UserStatusEnum.ACTIVE, unCheckedUser.getUserStatus());
+    }
 }
