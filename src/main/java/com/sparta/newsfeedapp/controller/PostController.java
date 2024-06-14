@@ -35,7 +35,7 @@ public class PostController {
 
     // 뉴스피드 일부 조회
     @GetMapping("/posts/{id}")
-    public List<PostResponseDto> getPost(@PathVariable Long id) {
+    public PostResponseDto getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 

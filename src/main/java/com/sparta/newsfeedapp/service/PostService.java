@@ -41,8 +41,10 @@ public class PostService {
         return postRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
-    public List<PostResponseDto> getPost(Long id) {
-        return postRepository.findAllById(id).stream().map(PostResponseDto::new).toList();
+    public PostResponseDto getPost(Long id) {
+        return new PostResponseDto(postRepository.findById(id).orElseThrow(
+                PostIdNotFoundException::new
+        ));
     }
 
     public List<Comment> getComments(Long postId) {
