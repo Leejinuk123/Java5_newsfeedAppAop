@@ -26,11 +26,6 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    public Long findMaxIdOfCommentTable(){
-        return Optional.ofNullable(commentRepository.findMaxId()).orElse((long)0);
-
-    }
-
     public CommentResponseDto createComment(CommentCreateRequestDto requestDto, Long postId, User user){
         // RequestDto > Entity
         Post checkPost = postRepository.findById(postId).orElseThrow(PostIdNotFoundException::new);
