@@ -80,7 +80,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("Post 등록")
+    @DisplayName("게시글 등록 성공 테스트")
     void test1() throws Exception {
         this.mockUserSetup();
         //Jackson 라이브러리에서 requestDto 를 역직렬화 하기 위해서는 requestDto 부분에 꼭 기본 생성자가 있어야한다.
