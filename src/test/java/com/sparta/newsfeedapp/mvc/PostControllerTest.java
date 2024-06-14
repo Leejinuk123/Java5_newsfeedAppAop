@@ -5,18 +5,14 @@ import com.sparta.newsfeedapp.config.WebSecurityConfig;
 import com.sparta.newsfeedapp.controller.PostController;
 import com.sparta.newsfeedapp.dto.post.PostRequestDto;
 import com.sparta.newsfeedapp.dto.post.PostResponseDto;
-import com.sparta.newsfeedapp.entity.Comment;
 import com.sparta.newsfeedapp.entity.Post;
 import com.sparta.newsfeedapp.entity.User;
 import com.sparta.newsfeedapp.entity.UserStatusEnum;
-import com.sparta.newsfeedapp.repository.CommentRepository;
-import com.sparta.newsfeedapp.repository.PostRepository;
 import com.sparta.newsfeedapp.security.UserDetailsImpl;
 import com.sparta.newsfeedapp.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,10 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -38,13 +30,10 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(
         controllers = PostController.class,
@@ -117,8 +106,8 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 전체 조회")
-    public void test() throws Exception {
+    @DisplayName("게시글 전체 조회 성공 테스트")
+    public void test2() throws Exception {
         //given
         PostResponseDto responseDto1 = new PostResponseDto(1L, 1L, "첫 번째 게시글", null, null);
         PostResponseDto responseDto2 = new PostResponseDto(2L, 1L, "두 번째 게시글", null, null);
@@ -136,5 +125,65 @@ class PostControllerTest {
                 .andExpect(jsonPath("$[0].content").value("첫 번째 게시글"))
                 .andExpect(jsonPath("$[1].content").value("두 번째 게시글"))
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시글 단일 조회 성공 테스트")
+    public void test3() throws Exception {
+        //given
+        PostResponseDto responseDto = new PostResponseDto(1L, 1L, "첫 번째 게시글", null, null);
+        given(postService.getPost(any(Long.class))).willReturn(responseDto);
+
+        //when - then
+        mvc.perform(get("/api/posts/1")
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("첫 번째 게시글"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 기능 성공 테스트")
+    public void test4() throws Exception {
+        this.mockUserSetup();
+
+        given(postService.deletePost(any(Long.class), any(User.class))).willAnswer(invocation -> {
+            Long id = invocation.getArgument(0);
+            return id;
+        });
+
+        mvc.perform(delete("/api/posts/2")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .principal(mockPrincipal)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("2")) //content 값이 1({postId}) 인지 확인
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시글 수정 기능 성공 테스트")
+    public void test() throws Exception {
+        this.mockUserSetup();
+        PostRequestDto updateRequestDto = new PostRequestDto("업데이트 내용입니다.");
+        Post testPost = new Post(updateRequestDto, new User());
+
+        PostResponseDto responseDto = new PostResponseDto(testPost);
+
+        String postInfo = objectMapper.writeValueAsString(updateRequestDto);
+
+        given(postService.updatePost(any(Long.class), any(PostRequestDto.class) ,any(User.class))).willReturn(responseDto);
+
+        mvc.perform(put("/api/posts/1")
+                        .content(postInfo)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .principal(mockPrincipal)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("업데이트 내용입니다."))
+                .andDo(print());
+
     }
 }
