@@ -100,8 +100,7 @@ public class UserService {
     }
 
     public User loadUserByUserId(String userId) throws UsernameNotFoundException {
-        return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+        return userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
     }
 
     // logout
