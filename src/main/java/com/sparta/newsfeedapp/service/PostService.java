@@ -55,7 +55,6 @@ public class PostService {
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
         Post post = findPostById(id);
         if (!post.getUser().getId().equals(user.getId())){
-
             throw new UserMismatchException();
         }
         post.update(requestDto);
