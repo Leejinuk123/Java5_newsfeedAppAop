@@ -10,10 +10,8 @@ import com.sparta.newsfeedapp.exception.DeletedUserException;
 import com.sparta.newsfeedapp.exception.PasswordMistmatchException;
 import com.sparta.newsfeedapp.exception.UserNotFoundException;
 import com.sparta.newsfeedapp.repository.UserRepository;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.RequiredTypes;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -167,8 +165,4 @@ class UserServiceTest {
 
         assertEquals("삭제된 유저입니다.", exception.getMessage());
     }
-
-//    @Test
-//    void logout() {
-//    }
 }
